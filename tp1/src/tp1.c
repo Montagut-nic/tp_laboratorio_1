@@ -32,6 +32,9 @@ que contenga las funciones para realizar las cinco operaciones.
 #include "utn.h"
 
 #define MENSAJE_LEN 250
+#define MAX_NUM 10000
+#define MIN_NUM -10000
+#define REINTENTOS 5
 
 int main(void){
 	setbuf(stdout,NULL);
@@ -39,22 +42,22 @@ int main(void){
 	int respuesta;
 	int flagSinOperaciones=1;
 	char mensaje[MENSAJE_LEN];
-	Numeros operandosAux;
+	S_Numeros operandosAux;
 
-	utn_getFloat(&operandosAux.valorA,"Ingrese el primer operando (A)\n","Error. No se ingreso un numero valido.\n",5,-10000,10000);
-	utn_getFloat(&operandosAux.valorB,"Ingrese el segundo operando (B)\n","Error. No se ingreso un numero valido.\n",5,-10000,10000);
+	utn_getFloat(&operandosAux.valorA,"Ingrese el primer operando (A)\n","Error. No se ingreso un numero valido.\n",5,MIN_NUM,MAX_NUM);
+	utn_getFloat(&operandosAux.valorB,"Ingrese el segundo operando (B)\n","Error. No se ingreso un numero valido.\n",5,MIN_NUM,MAX_NUM);
 	do{
 		snprintf(mensaje,sizeof(mensaje),"Seleccione alguna de las siguientes opciones:\n\n1.Modificar 1er operando (A = %.2f)\n2.Modificar 2do operando (B = %.2f)\n3.Calcular todas las operaciones\n4.Informar los resultados\n5.Salir\n\n",operandosAux.valorA,operandosAux.valorB);
-		respuesta = utn_getInt(&opcionInt,mensaje,"Error. No es una opcion valida\n",5,1,5);
+		respuesta = utn_getInt(&opcionInt,mensaje,"Error. No es una opcion valida\n",REINTENTOS,1,5);
 		if(respuesta==0){
 			switch(opcionInt)
 			{
 				case 1:
-					utn_getFloat(&operandosAux.valorA,"Ingrese el primer operando (A)\n","Error. No se ingreso un numero valido.\n",5,-10000,10000);
+					utn_getFloat(&operandosAux.valorA,"Ingrese el primer operando (A)\n","Error. No se ingreso un numero valido.\n",REINTENTOS,MIN_NUM,MAX_NUM);
 					flagSinOperaciones=1;
 					break;
 				case 2:
-					utn_getFloat(&operandosAux.valorB,"Ingrese el segundo operando (B)\n","Error. No se ingreso un numero valido.\n",5,-10000,10000);
+					utn_getFloat(&operandosAux.valorB,"Ingrese el segundo operando (B)\n","Error. No se ingreso un numero valido.\n",REINTENTOS,MIN_NUM,MAX_NUM);
 					flagSinOperaciones=1;
 					break;
 				case 3:

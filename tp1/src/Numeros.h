@@ -15,15 +15,15 @@ typedef struct{
 	float resultadoResta;
 	float resultadoDiv;
 	float resultadoMult;
-	double factorialA;
-	double factorialB;
-} Numeros;
+	long double factorialA;
+	long double factorialB;
+} S_Numeros;
 
-void nums_suma (float valorA,float valorB, float* resultadoSuma);
-void nums_resta (float valorA,float valorB, float* resultadoResta);
-void nums_multiplicacion (float valorA,float valorB, float* resultadoMult);
+int nums_suma (float valorA,float valorB, float* pResultadoSuma);
+int nums_resta (float valorA,float valorB, float* pResultadoResta);
+int nums_multiplicacion (float valorA,float valorB, float* pResultadoMult);
 int nums_division (float valorA,float valorB, float* resultadoDiv);
-void nums_factorial (float valorA,float valorB, double* resultadoFactorialA, double* resultadoFactorialB);
-void nums_informarResultados(Numeros operandos);
+int nums_factorial (float valorA,float valorB,long double* pResultadoFactorialA, long double* pResultadoFactorialB);
+void nums_informarResultados(S_Numeros operandos);
 
 #endif /* NUMEROS_H_ */
