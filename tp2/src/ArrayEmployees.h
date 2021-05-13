@@ -22,4 +22,23 @@ struct
 	int isEmpty;
 }typedef Employee;
 
+int generateId(void);
+int initEmployees(Employee* list, int len);
+int addEmployee(Employee* list, int len, int id, char name[],char lastName[],float salary,int sector);
+int findEmptyEmployee (Employee* list, int len);
+int printEmployees(Employee* list, int length);
+int printOneEmployee(Employee* element);
+
+float getSalaryEmployee(Employee* this);
+int getNameEmployee(Employee* this, char name[]);
+int getLastNameEmployee(Employee* this, char lastName[]);
+int getSectorEmployee(Employee* this);
+int getIdEmployee(Employee* this);
+int setSalaryEmployee(Employee* this, float salary);
+int setNameEmployee(Employee* this, char name[]);
+int setLastNameEmployee(Employee* this, char lastName[]);
+int setSectorEmployee(Employee* this, int sector);
+int setIdEmployee(Employee* this, int id);
+
+
 #endif /* ARRAYEMPLOYEES_H_ */

@@ -301,7 +301,7 @@ int utn_getCuit(char array[],int longitud,char mensajePedido[],char mensajeError
  * \param int intentos: es la cantidad de reintentos que se le permite al usuario
  * \return int: retorna -1 (ERROR_PARAM) si hay un error en los parametros, -2 (ERROR_DATOS) si el usuario ingresa mal los datos y se queda sin reintentos, 0 si todo esta OK
  */
-int utn_getNombre(char array[],int longitud,char mensajePedido[],char mensajeError[],int intentos)
+int utn_getName(char array[],int longitud,char mensajePedido[],char mensajeError[],int intentos)
 {
 	int retorno = ERROR_PARAM;
 	char bufferStr[ARRAY_LEN];
@@ -310,7 +310,7 @@ int utn_getNombre(char array[],int longitud,char mensajePedido[],char mensajeErr
 		retorno = ERROR_DATOS;
 		for(;intentos>=0;intentos--){
 			printf("%s",mensajePedido);
-			respuesta=getNombre(bufferStr,sizeof(bufferStr));
+			respuesta=getName(bufferStr,sizeof(bufferStr));
 			if (respuesta==OK&&strnlen(bufferStr,sizeof(bufferStr))<=longitud){
 				retorno = OK;
 				strncpy(array,bufferStr,longitud);
@@ -448,7 +448,7 @@ int esCuit(char array[],int longitud){
  * \param char array[]: array que se valida
  * \return int: retorna -1 (ERROR_PARAM) si el array es NULL, 0 es false, 1 es true
  */
-int esNombre(char array[]){
+int isValidName(char array[]){
 	int retorno=ERROR_PARAM;
 	int i;
 	if(array!=NULL){
@@ -463,6 +463,42 @@ int esNombre(char array[]){
 				break;
 			}
 		}
+	}
+	return retorno;
+}
+
+/** \brief Valida si el float ingresado es un salario valido
+ * \param float salary: float que se valida
+ * \return int: retorna 0 si es false, 1 si es true
+ */
+int isValidSalary(float salary){
+	int retorno=FALSE;
+	if(salary>0){
+		retorno=TRUE;
+	}
+	return retorno;
+}
+
+/** \brief Valida si el int ingresado es un sector valido
+ * \param int sector: int que se valida
+ * \return int: retorna 0 si es false, 1 si es true
+ */
+int isValidSector(int sector){
+	int retorno=FALSE;
+	if(sector>0){
+		retorno=TRUE;
+	}
+	return retorno;
+}
+
+/** \brief Valida si el int ingresado es un id valido
+ * \param int id: int que se valida
+ * \return int: retorna 0 si es false, 1 si es true
+ */
+int isValidId(int id){
+	int retorno=FALSE;
+	if(id>0){
+		retorno=TRUE;
 	}
 	return retorno;
 }
@@ -585,13 +621,13 @@ int getCuit(char array[],int longitud){
  * \param int longitud: es el tamaño del array donde se guarda la cadena de caracteres
  * \return int: retorna -1 (ERROR_PARAM) si el array es NULL o longitud no es mayor a 0, -2 (ERROR_DATOS) si no se ingresa solo letras, 0 si todo OK
  */
-int getNombre(char array[],int longitud){
+int getName(char array[],int longitud){
 	int retorno=ERROR_PARAM;
 	char buffer[ARRAY_LEN];
 	if(array!=NULL&&longitud>0){
 		retorno=ERROR_DATOS;
 		myGets(buffer,sizeof(buffer));
-		if(esNombre(buffer)==TRUE&&strnlen(buffer,sizeof(buffer))<=longitud){
+		if(isValidName(buffer)==TRUE&&strnlen(buffer,sizeof(buffer))<=longitud){
 			strncpy(array,buffer,longitud);
 			retorno=OK;
 		}
