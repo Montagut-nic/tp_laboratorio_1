@@ -26,6 +26,7 @@ int generateId(void);
 int initEmployees(Employee* list, int len);
 int addEmployee(Employee* list, int len, int id, char name[],char lastName[],float salary,int sector);
 int findEmptyEmployee (Employee* list, int len);
+int findEmployeeById(Employee* list, int len,int id);
 int printEmployees(Employee* list, int length);
 int printOneEmployee(Employee* element);
 

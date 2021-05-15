@@ -40,6 +40,106 @@ int initEmployees(Employee* list, int len)
 	return flagError;
 }
 
+int showMainMenuEmployees(Employee* list,int len){
+	int option;
+	int flagError=-1;
+	int qtyEmployee=0;
+	int id;
+	if(list!=NULL && len>0){
+		do{
+			if(!utn_getInt(&option,"\nSelect option:\n\n1.Add employee\n2.Modify employee\n3.Delete employee\n4.Inform\n5.Exit\n",
+					"\nError. Not a valid option.\n",3,1,5))
+			{
+				flagError=0;
+				switch(option)
+				{
+					case 1:
+						if( !(findEmptyEmployee(list, len)<0) && !altaEmployee(list, len) )
+						{
+							qtyEmployee++;
+							printf("\nEmployee added to the list.\n");
+						}
+						break;
+					case 2:
+						if(qtyEmployee>0){
+							if(!modifyEmployee(list, len)){
+								printf("\nChanges saved.\n");
+							}
+						}else{
+							printf("\nThere are no employees on the list\n");
+						}
+						break;
+					case 3:
+						if(qtyEmployee>0){
+							utn_getIntLimitMaxOrMin(&id,"\nId?\n","\nError. Not a valid id.\n",3,1,0,LIM_MIN);
+							if(!removeEmployee(list, len, id)){
+								printf("\nChanges saved.\n");
+							}
+						}else{
+							printf("\nThere are no employees on the list\n");
+						}
+						qtyEmployee--;
+						break;
+					case 4:
+						break;
+				}
+			}
+		}while(option!=5);
+	}
+	return flagError;
+}
+
+int showModifyMenuEmployees(Employee* element){
+	char message[ARRAY_LEN];
+	int option=-1;
+	char name[CHAR_LEN];
+	char lastName[CHAR_LEN];
+	float salary;
+	int sector;
+	if(element!=NULL){
+		getNameEmployee(element, name);
+		getLastNameEmployee(element, lastName);
+		salary=getSalaryEmployee(element);
+		sector=getSectorEmployee(element);
+		do{
+			snprintf(message,ARRAY_LEN,"\nSelect:\n\n"
+											"1. Change name ( %s )\n"
+											"2. Change last name ( %s )\n"
+											"3. Change sector ( %d )\n"
+											"4. Change salary ( $%.2f )\n"
+											"5. Save changes and continue\n"
+											"6. Cancel\n",
+										name,lastName,sector,salary);
+			if(!utn_getInt(option,message,"Error. Not a valid option",2,1,6))
+			{
+				switch (option){
+					case 1:
+						if(!utn_getName(name,CHAR_LEN,"\nNew name:\n","\nError. Not a valid name.\n",2)){
+							setNameEmployee(element, name);
+						}
+						break;
+					case 2:
+						if(!utn_getName(lastName,CHAR_LEN,"\nNew last name:\n","\nError. Not a valid last name.\n", 2)){
+							setLastNameEmployee(element, lastName);
+						}
+						break;
+					case 3:
+						if(!utn_getIntLimitMaxOrMin(&sector,"\nNew sector:","\nError. Not a valid sector.\n",2,1,0,LIM_MIN)){
+							setSectorEmployee(element, sector);
+						}
+						break;
+					case 4:
+						if(!utn_getFloatLimitMinOrMax(&salary,"\nNew salary:","\nError. Not a valid salary.\n",2,1,0,LIM_MIN)){
+							setSalaryEmployee(element, salary);
+						}
+						break;
+				}
+			}
+		}while(option!=6&&option!=5);
+	}
+	return option;
+}
+
 
 /** \brief add in a existing list of employees the values received as parameters in the first empty position
  *
@@ -67,6 +167,7 @@ int addEmployee(Employee* list, int len, int id, char name[],char lastName[],flo
 			setSalaryEmployee(&list[i], salary);
 			setSectorEmployee(&list[i], sector);
 			list[i].isEmpty=FALSE;
+			printf("\nYour id is %d\n",id);
 			flagError=0;
 		}
 	}
@@ -74,26 +175,26 @@ int addEmployee(Employee* list, int len, int id, char name[],char lastName[],flo
 }
 
 
-/** \brief To indicate that all position in the array are empty, this function put the flag (isEmpty) in TRUE in all
- * position of the array
+/** \brief To request information about the employee and add it to the list
  *
  * \param list Employee*: Pointer to array of employees
  * \param len int: Array length
- * \return int: Return (-1) if Error [Invalid length or NULL pointer or ] - (0) if Ok
+ * \return int: Return (-1) if Error [Invalid length or NULL pointer or user canceled or user run out of attempts] - (0) if Ok
  *
  */
 int altaEmployee(Employee* list, int len){
 	Employee buffer;
 	int flagError=-1;
 	if(list!=NULL&&len>0){
-		flagError=-2;
-		if(!utn_getName(buffer.name, sizeof(buffer.name),"Enter name","Error. Not a valid name",3)
-			&& !utn_getName(buffer.lastName, sizeof(buffer.lastName),"Enter last name","Error. Not a valid last name",3)
-			&& !utn_getFloatLimitMinOrMax(&buffer.salary,"Enter salary","Error. Not a valid salary",3,1,0,LIM_MIN)
-			&& !utn_getIntLimitMaxOrMin(&buffer.sector,"Enter sector","Error. Not a valid sector",3,1,0,LIM_MIN))
+		if(!utn_getName(buffer.name, sizeof(buffer.name),"\nName?\n","\nError. Not a valid name\n",3)
+			&& !utn_getName(buffer.lastName, sizeof(buffer.lastName),"\nLast name?\n","\nError. Not a valid last name\n",3)
+			&& !utn_getIntLimitMaxOrMin(&buffer.sector,"\nSector?\n","\nError. Not a valid sector\n",3,1,0,LIM_MIN)
+			&& !utn_getFloatLimitMinOrMax(&buffer.salary,"\nSalary?\n","\nError. Not a valid salary\n",3,1,0,LIM_MIN))
 		{
-			flagError=0;
-			addEmployee(list, len, generateId(), buffer.name, buffer.lastName, buffer.salary, buffer.sector);
+			if(showModifyMenuEmployees(buffer)==5){
+				flagError=0;
+				addEmployee(list,len,generateId(),buffer.name,buffer.lastName,buffer.salary,buffer.sector);
+			}
 		}
 	}
 	return flagError;
@@ -122,6 +223,25 @@ int removeEmployee(Employee* list, int len, int id)
     return flagError;
 }
 
+int modifyEmployee(Employee* list, int len){
+	int i;
+	int id;
+	int flagError=-1;
+	Employee buffer;
+	if(list!=NULL&&len>0){
+		utn_getIntLimitMaxOrMin(&id,"\nId?\n","\nError. Not a valid id.\n",3,1,0,LIM_MIN);
+		i=findEmployeeById(list,len,id);
+		if(i>=0&&list[i].isEmpty==0){
+			buffer = list[i];
+			if(showModifyMenuEmployees(buffer)==5){
+				list[i] = buffer;
+				flagError=0;
+			}
+		}
+	}
+	return flagError;
+}
+
 /** \brief To get the first empty position in the array
  *
  * \param list Employee*: Pointer to array of employees
@@ -132,17 +252,20 @@ int removeEmployee(Employee* list, int len, int id)
  */
 int findEmptyEmployee (Employee* list, int len)
 {
-	int value = -1;
+	int position = -1;
 	int i=0;
 	if(list!=NULL && len>0){
 		for (;i<len;i++){
 			if (list[i].isEmpty==1){
-				value=i;
+				position=i;
 				break;
 			}
 		}
+		if(position<0){
+			printf("\nTheres no more free space in the list.\n");
+		}
 	}
-    return value;
+    return position;
 }
 
 /** \brief find an Employee by Id en returns the index position in array.
@@ -156,16 +279,19 @@ int findEmptyEmployee (Employee* list, int len)
 int findEmployeeById(Employee* list, int len,int id)
 {
 	int i=0;
-	int flagError=-1;
+	int position=-1;
 	if(list!=NULL && len>0 && id>0){
 		for(; i<len; i++){
-			if(list[i].id==id){
-				flagError=i;
+			if(list[i].id==id&&list[i].isEmpty==0){
+				position=i;
 				break;
 			}
 		}
+		if(position<0){
+			printf("\Error. Id not found.\n")
+		}
 	}
-	return flagError;
+	return position;
 }
 
 /** \brief To set the name of a employee
@@ -266,7 +392,7 @@ int setSalaryEmployee(Employee* this, float salary)
  */
 float getSalaryEmployee(Employee* this)
 {
-	int salary = -1;
+	float salary = -1;
 	if(this!=NULL)
 	{
 		salary=this->salary;
@@ -354,8 +480,8 @@ int printEmployees(Employee* list, int length)
 	int flagError=-1;
 	int i=0;
 	if(list!=NULL && length>0){
+		printf("ID\t\tNAME\t\tLAST NAME\tSECTOR\tSALARY\n\n");
 		for(;i<length;i++){
-			printf("ID --- NAME - LAST NAME - SECTOR - SALARY");
 			printOneEmployee(&list[i]);
 		}
 	}
@@ -383,7 +509,7 @@ int printOneEmployee(Employee* element)
 		getLastNameEmployee(element, lastName);
 		sector=getSectorEmployee(element);
 		salary=getSalaryEmployee(element);
-		printf("%d --- %s - %s - %d - $ %f",id,name,lastName,sector,salary);
+		printf("%-15d %-15s %-15s  %d\t $%.2f\n",id,name,lastName,sector,salary);
 	}
 	return flagError;
 }

@@ -34,7 +34,15 @@ detallan las funciones que esta biblioteca debe tener.
 #include <stdlib.h>
 #include "utn.h"
 #include "ArrayEmployees.h"
+#define QTY_EMP 1000
 
 int main(void) {
+	Employee list[QTY_EMP];
+	if(!initEmployees(list, QTY_EMP)){
+		addEmployee(list, QTY_EMP, 15,"Pepe","Le Peu",152.95,2);
+		addEmployee(list, QTY_EMP, 16,"Nicolas Martin","Le Peuhenco",150.55,3);
+		printEmployees(list,QTY_EMP);
+	}
+
 	return EXIT_SUCCESS;
 }
