@@ -272,6 +272,7 @@ int removeEmployee(Employee* list, int len, int id)
     if(list!=NULL&&len>0&&id>0){
 		i=findEmployeeById(list,len,id);
 		if(i>=0 && list[i].isEmpty==0){
+			printf("ID\t\tNAME\t\tLAST NAME\tSECTOR\tSALARY\n\n");
 			printOneEmployee(&list[i]);
 			if(!utn_getInt(&confirm,"\nDo you want to remove this employee from the list?\n[YES:1]\t[NO:0]\n",
 					"\nError. Not a valid option\n",3,0,1)
