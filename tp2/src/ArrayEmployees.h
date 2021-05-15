@@ -24,6 +24,9 @@ struct
 
 int generateId(void);
 int initEmployees(Employee* list, int len);
+int showMainMenuEmployees(Employee* list,int len);
+int showInformMenuEmployees(Employee* list,int len);
+int showModifyMenuEmployees(Employee* element);
 int newEmployee(Employee* list, int len);
 int addEmployee(Employee* list, int len, int id, char name[],char lastName[],float salary,int sector);
 int modifyEmployee(Employee* list, int len);
