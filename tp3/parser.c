@@ -13,9 +13,10 @@ int parser_EmployeeFromText(FILE* pFile , LinkedList* pArrayListEmployee, int* i
 	char sueldoAux[256];
 	char horasAux[256];
 	char idAux[256];
+	int flagOnce=0;
 	int r=0;
 	int idEmp;
-	Employee* pE;
+	Employee* pE=NULL;
 	int idMax=0;
 	if(pFile!=NULL && pArrayListEmployee!=NULL && idMaxObt!=NULL)
 	{
@@ -23,7 +24,7 @@ int parser_EmployeeFromText(FILE* pFile , LinkedList* pArrayListEmployee, int* i
 		{
 			if(fscanf(pFile,"%[^,],%[^,],%[^,],%[^\n]\n",idAux,nombreAux,horasAux,sueldoAux)==4)
 			{
-				if(r!=0)
+				if(flagOnce)
 				{
 					pE=employee_newParametros(idAux, nombreAux, horasAux, sueldoAux);
 					if(pE!=NULL){
@@ -32,12 +33,13 @@ int parser_EmployeeFromText(FILE* pFile , LinkedList* pArrayListEmployee, int* i
 						if(idMax < idEmp ){
 							idMax=idEmp;
 						}
+						r++;
 					}
 				}
 			}
-			r++;
+			flagOnce=1;
 		}
-		while(!feof(pFile));
+		while(feof(pFile)==0);
 		*idMaxObt=idMax;
 	}
     return r;
@@ -61,7 +63,7 @@ int parser_EmployeeFromBinary(FILE* pFile , LinkedList* pArrayListEmployee, int*
 		r=0;
 		do {
 			pE=employee_new();
-			if(fread(pE,sizeof(Employee),1,pFile)==4){
+			if(fread(pE,sizeof(Employee),1,pFile)==1){
 				ll_add(pArrayListEmployee,pE);
 				employee_getId(pE, &idEmp);
 				if(idEmp>idMax){
@@ -71,7 +73,7 @@ int parser_EmployeeFromBinary(FILE* pFile , LinkedList* pArrayListEmployee, int*
 			}else{
 				employee_delete(pE);
 			}
-		}while(!feof(pFile));
+		}while(feof(pFile)==0);
 		*idMaxObt=idMax;
 	}
 	return r;
