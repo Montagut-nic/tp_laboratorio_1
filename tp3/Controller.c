@@ -28,7 +28,7 @@ void* ll_getNext (LinkedList* this,int isFirst){
  * \return int
  *
  */
-int controller_loadFromText(char* path , LinkedList* pArrayListEmployee, int* idMaxAlta)
+int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 {
 	FILE* pFile=NULL;
 	int r;
@@ -43,7 +43,7 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee, int* id
 				retorno=0;
 			}
 			fclose(pFile);
-			*idMaxAlta=idMax;
+			employee_initId(idMax);
 		}
 	}
     return retorno;
@@ -56,7 +56,7 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee, int* id
  * \return int
  *
  */
-int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee, int* idMaxAlta)
+int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 {
 	FILE* pFile=NULL;
 	int r;
@@ -71,7 +71,7 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee, int* 
 				retorno=0;
 			}
 			fclose(pFile);
-			*idMaxAlta=idMax;
+			employee_initId(idMax);
 		}
 	}
     return retorno;
@@ -86,7 +86,29 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee, int* 
  */
 int controller_addEmployee(LinkedList* pArrayListEmployee)
 {
-    return 1;
+	int ret=-1;
+	char nombreAux[128];
+	char sueldoAux[256];
+	char horasAux[256];
+	char idAux[256];
+	int idGen;
+	Employee* pE;
+	if(pArrayListEmployee!=NULL){
+		if( !utn_getString(nombreAux, sizeof(nombreAux), "\nIngrese el nombre\n","\nERROR!\n", 3) &&
+			!utn_getStringSoloNumeros(sueldoAux, sizeof(sueldoAux),"\nIngrese el sueldo\n","ERROR!",3) &&
+			!utn_getStringSoloNumeros(horasAux, sizeof(horasAux),"\nIngrese las horas trabajadas\n","\nERROR!\n",3) )
+		{
+			idGen=employee_generateId();
+			snprintf(idAux,sizeof(idAux),"%d",idGen);
+			pE=employee_newParametros(idAux, nombreAux, horasAux, sueldoAux);
+			if(pE!=NULL){
+				ret=ll_add(pArrayListEmployee, pE);
+				printf("\nSe ha cargado con exito con el id %d\n",idGen);
+				employee_printEmployee(pE);
+			}
+		}
+	}
+	return ret;
 }
 
 /** \brief Modificar datos de empleado
@@ -98,7 +120,46 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
  */
 int controller_editEmployee(LinkedList* pArrayListEmployee)
 {
-    return 1;
+	int ret=-1;
+	char nombreAux[128];
+	int sueldoAux;
+	int horasAux;
+	int idAux;
+	int idBuscar;
+	int isFirst=1;
+	Employee* pE;
+	int resp;
+	if(pArrayListEmployee!=NULL){
+		if( !utn_getIntLimitMaxOrMin(&idBuscar, "\nIngrese el id del empleado a modificar\n", "\nERROR!\n",3,0,0,LIM_MIN) )
+		{
+			do{
+				pE=ll_getNext(pArrayListEmployee,isFirst);
+				if(employee_getId(pE, &idAux) && idBuscar==idAux){
+					break;
+				}
+				isFirst=0;
+			}while(pE!=NULL);
+			if( pE!=NULL ){
+				employee_printEmployee(pE);
+				if( !utn_getNombre(nombreAux, sizeof(nombreAux), "\nIngrese el nombre\n","\nERROR!\n", 3) &&
+					!utn_getIntLimitMaxOrMin(&sueldoAux,"\nIngrese el sueldo\n","ERROR!",3,0,0,LIM_MIN) &&
+					!utn_getIntLimitMaxOrMin(&horasAux,"\nIngrese las horas trabajadas\n","\nERROR!\n",3,0,0,LIM_MIN) &&
+					!utn_getInt(&resp, "\nDesea confirmar los cambios?\n[SI:1]\t[NO:0]\n","\nERROR!\n",3,0,1) &&
+					resp==1 &&
+					!employee_setHorasTrabajadas(pE,horasAux) &&
+					!employee_setSueldo(pE, sueldoAux) &&
+					!employee_setNombre(pE, nombreAux) )
+				{
+					ret=0;
+					printf("\nSe ha cambiado la informacion con exito\n");
+					employee_printEmployee(pE);
+				}else{
+					printf("\nNo se ha modificado ningun dato\n");
+				}
+			}
+		}
+	}
+	return ret;
 }
 
 /** \brief Baja de empleado
@@ -110,7 +171,39 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
  */
 int controller_removeEmployee(LinkedList* pArrayListEmployee)
 {
-    return 1;
+	int retorno=-1;
+	int idBuscar;
+	Employee*pE;
+	int isFirst=1;
+	int idAux;
+	int resp;
+	int index;
+	if( pArrayListEmployee!=NULL &&
+		!utn_getIntLimitMaxOrMin(&idBuscar, "\nIngrese el id del empleado a borrar\n", "\nERROR!\n",3,0,0,LIM_MIN) )
+	{
+		do{
+			pE=ll_getNext(pArrayListEmployee,isFirst);
+			if(employee_getId(pE, &idAux) && idBuscar==idAux){
+				break;
+			}
+			isFirst=0;
+		}while(pE!=NULL);
+		if( pE!=NULL){
+			employee_printEmployee(pE);
+			if( !utn_getInt(&resp,"\nDesea remover esta informacion?\n[SI:1]\t[NO:0]\n","\nERROR!\n",3,0,1) &&
+				resp==1)
+			{
+				index=ll_indexOf(pArrayListEmployee,pE);
+				employee_delete(pE);
+				ll_remove(pArrayListEmployee, index);
+				retorno=0;
+				printf("\nSe ha removido la informacion con exito\n");
+			} else{
+				printf("\nSe ha cancelado la operacion\n");
+			}
+		}
+	}
+	return retorno;
 }
 
 /** \brief Listar empleados
@@ -134,7 +227,60 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
  */
 int controller_sortEmployee(LinkedList* pArrayListEmployee)
 {
-    return 1;
+	int opcion;
+	char mensaje[ARRAY_LEN];
+	int orden;
+	int retorno=-1;
+    if( pArrayListEmployee!=NULL)
+    {
+    	snprintf(mensaje,sizeof(mensaje),"\nElija el criterio para ordenar:\n\n"
+    					"1. ID\n"
+    					"2. Nombre\n"
+    					"3. Sueldo\n"
+    					"4. Horas Trabajadas\n");
+    	if(!utn_getInt(&opcion, mensaje, "ERROR!",3,1,4) )
+    	{
+    		snprintf(mensaje,sizeof(mensaje),"\nElija el tipo de ordenamiento:\n[Ascendente:1]\t[Descendiente:0]");
+    		if(!utn_getInt(&orden, mensaje, "ERROR!",3,0,1) )
+    		{
+    			switch(opcion)
+    			{
+    				case 1:
+    					if(!ll_sort(pArrayListEmployee, employee_comparaId, orden))
+    					{
+    						printf("\nSe ha ordenado la lista por id con exito\n");
+    						retorno=0;
+    					}
+    					break;
+    				case 2:
+    					if(!ll_sort(pArrayListEmployee, employee_comparaNombre, orden))
+    					{
+    						printf("\nSe ha ordenado la lista por nombre con exito\n");
+    						retorno=0;
+    					}
+    					break;
+    				case 3:
+    					if(!ll_sort(pArrayListEmployee, employee_comparaSueldo, orden))
+    					{
+    						printf("\nSe ha ordenado la lista por sueldo con exito\n");
+    						retorno=0;
+    					}
+    					break;
+    				case 4:
+    					if(!ll_sort(pArrayListEmployee, employee_comparaHoras, orden))
+    					{
+    						printf("\nSe ha ordenado la lista por horas trabajadas con exito\n");
+    						retorno=0;
+    					}
+    					break;
+    			}
+    		}
+    	}
+    	if(retorno!=0){
+    		printf("\nSe ha cancelado el reordenamiento de la lista\n");
+    	}
+    }
+    return retorno;
 }
 
 /** \brief Guarda los datos de los empleados en el archivo data.csv (modo texto).
@@ -173,7 +319,7 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
 				flagIsFirst=0;
 			}while(pE!=NULL);
 			if(r>0){
-				printf("\nSe han guardado %d empleados",r);
+				printf("\nSe han guardado %d empleados en el archivo en Modo Texto",r);
 				retorno=0;
 			}
 			fclose(pFile);
@@ -209,7 +355,7 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 				}
 			}while(pE!=NULL);
 			if(r>0){
-				printf("\nSe han guardado %d empleados\n",r);
+				printf("\nSe han guardado %d empleados en el archivo en Modo Binario\n",r);
 				retorno=0;
 			}
 			fclose(pFile);

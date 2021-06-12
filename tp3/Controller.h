@@ -14,10 +14,11 @@
 #include "LinkedList.h"
 #include "Employee.h"
 #include "parser.h"
+#include "utn.h"
 
 void* ll_getNext (LinkedList* this,int isFirst);
-int controller_loadFromText(char* path , LinkedList* pArrayListEmployee, int* idMaxAlta);
-int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee, int* idMaxAlta);
+int controller_loadFromText(char* path , LinkedList* pArrayListEmployee);
+int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee);
 int controller_addEmployee(LinkedList* pArrayListEmployee);
 int controller_editEmployee(LinkedList* pArrayListEmployee);
 int controller_removeEmployee(LinkedList* pArrayListEmployee);
