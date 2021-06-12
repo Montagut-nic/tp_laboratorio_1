@@ -1,5 +1,9 @@
 #include "validaciones.h"
 
+/** \brief Valida si la cadena de caracteres ingresada es un id valido
+ * \param idStr char*: cadena de caracteres que se valida
+ * \return int: retorna 0 si es false, 1 si es true, -1 si la cadena es NULL
+ */
 int isValidId (char* idStr){
 	int retorno = -1;
 	int i=0;
@@ -15,6 +19,10 @@ int isValidId (char* idStr){
 	return retorno;
 }
 
+/** \brief Valida si la cadena de caracteres ingresada es un nombre valido
+ * \param nombreStr char*: cadena de caracteres que se valida
+ * \return int: retorna 0 si es false, 1 si es true, -1 si la cadena es NULL
+ */
 int isValidNombre(char *nombreStr){
 	int retorno=-1;
 	int i=0;
@@ -36,6 +44,10 @@ int isValidNombre(char *nombreStr){
 	return retorno;
 }
 
+/** \brief Valida si la cadena de caracteres ingresada es un numero entero valido
+ * \param horasTrabajadasStr char*: cadena de caracteres que se valida
+ * \return int: retorna 0 si es false, 1 si es true, -1 si la cadena es NULL
+ */
 int isValidHorasTrabajadas (char* horasTrabajadasStr)
 {
 	int retorno = -1;
@@ -52,6 +64,10 @@ int isValidHorasTrabajadas (char* horasTrabajadasStr)
 	return retorno;
 }
 
+/** \brief Valida si la cadena de caracteres ingresada es un sueldo valido
+ * \param sueldoStr char*: cadena de caracteres que se valida
+ * \return int: retorna 0 si es false, 1 si es true, -1 si la cadena es NULL
+ */
 int isValidSueldo (char* sueldoStr){
 	int retorno = -1;
 	int i=0;

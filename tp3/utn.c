@@ -202,6 +202,14 @@ int utn_getString(char array[],int longitud,char mensajePedido[],char mensajeErr
 	return retorno;
 }
 
+/** \brief Solicita una cadena de caracteres al usuario y valida que este compuesta por numeros enteros negativos o positivos
+ * \param char array[]: es el array de tipo char donde se guarda la cadena de caracteres ingresado
+ * \param int longitud: es el tamaño del array donde se guarda la cadena de caracteres
+ * \param char mensajePedido[]: es el mensaje con el que se le pide al usuario que ingrese datos
+ * \param char mensajeError[]: es el mensaje a mostar en caso de error del usuario al ingresar datos
+ * \param int intentos: es la cantidad de reintentos que se le permite al usuario
+ * \return int: retorna [-1 (ERROR_PARAM) si hay un error en los parametros], [-2 (ERROR_DATOS) si el usuario ingresa mal los datos y se queda sin reintentos], [0 si todo esta OK]
+ */
 int utn_getStringSoloNumeros(char array[],int longitud,char mensajePedido[],char mensajeError[],int reintentos)
 {
     int retorno = ERROR_PARAM;
@@ -223,6 +231,14 @@ int utn_getStringSoloNumeros(char array[],int longitud,char mensajePedido[],char
     return retorno;
 }
 
+/** \brief Solicita una cadena de caracteres al usuario y valida que sea un nombre
+ * \param char array[]: es el array de tipo char donde se guarda la cadena de caracteres ingresado
+ * \param int longitud: es el tamaño del array donde se guarda la cadena de caracteres
+ * \param char mensajePedido[]: es el mensaje con el que se le pide al usuario que ingrese datos
+ * \param char mensajeError[]: es el mensaje a mostar en caso de error del usuario al ingresar datos
+ * \param int intentos: es la cantidad de reintentos que se le permite al usuario
+ * \return int: retorna -1 (ERROR_PARAM) si hay un error en los parametros, -2 (ERROR_DATOS) si el usuario ingresa mal los datos y se queda sin reintentos, 0 si todo esta OK
+ */
 int utn_getNombre(char array[],int longitud,char mensajePedido[],char mensajeError[],int intentos){
 	int retorno = ERROR_PARAM;
 	char bufferStr[ARRAY_LEN];
@@ -311,6 +327,10 @@ int esLetra(char array[]){
 	return retorno;
 }
 
+/** \brief Valida si el array ingresado es un nombre (contiene letras, espacios, guion medio o comilla simple)
+ * \param char array[]: array que se valida
+ * \return int: retorna -1 (ERROR_PARAM) si el array es NULL, 0 es false, 1 es true
+ */
 int esNombre(char *array){
 	int retorno=ERROR_PARAM;
 	int i=0;
@@ -405,6 +425,11 @@ int getString(char array[], int longitud){
 	return retorno;
 }
 
+/** \brief pide una cadeana de caracteres al usuario, valida que sea un numero entero valido y lo guarda en un array de tipo char
+ * \param char array[]: array donde se guarda la cadena de caracteres
+ * \param int longitud: es el tamaño del array donde se guarda la cadena de caracteres
+ * \return int: retorna -1 (ERROR_PARAM) si el array es NULL o longitud no es mayor a 0, -2 (ERROR_DATOS) si no se ingresa un numero entero valido, 0 si todo OK
+ */
 int getStringSoloNumeros(char array[], int longitud){
 	int retorno=ERROR_PARAM;
 	char buffer[ARRAY_LEN];
@@ -419,6 +444,11 @@ int getStringSoloNumeros(char array[], int longitud){
 	return retorno;
 }
 
+/** \brief pide una cadeana de caracteres al usuario, valida que sea un nombre valido y lo guarda en un array de tipo char
+ * \param char array[]: array donde se guarda la cadena de caracteres
+ * \param int longitud: es el tamaño del array donde se guarda la cadena de caracteres
+ * \return int: retorna -1 (ERROR_PARAM) si el array es NULL o longitud no es mayor a 0, -2 (ERROR_DATOS) si no se ingresa un nombre valido, 0 si todo OK
+ */
 int getNombre(char array[], int longitud){
 	int retorno=ERROR_PARAM;
 	char buffer[ARRAY_LEN];

@@ -2,9 +2,10 @@
 
 /** \brief Carga los datos de los empleados desde el archivo data.csv (modo texto).
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param path char*: cadena de caracteres que representa la ruta y nombre del archivo
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error] [0 en caso que se pueda cargar por lo menos
+ * los datos de un empleado al LinkedList]
  *
  */
 int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
@@ -30,9 +31,10 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 
 /** \brief Carga los datos de los empleados desde el archivo data.csv (modo binario).
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param path char*: cadena de caracteres que representa la ruta y nombre del archivo
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error] [0 en caso que se pueda cargar por lo menos
+ *  los datos de un empleado al LinkedList]
  *
  */
 int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
@@ -58,9 +60,9 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 
 /** \brief Alta de empleados
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error O la verificacion de la funcion ll_add falla O se cancele el alta por continuos errores al cargar]
+ * [0 en caso que la funcion ll_add agregue el elemento al LinkedList]
  *
  */
 int controller_addEmployee(LinkedList* pArrayListEmployee)
@@ -73,7 +75,7 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
 	int idGen;
 	Employee* pE;
 	if(pArrayListEmployee!=NULL){
-		if( !utn_getString(nombreAux, sizeof(nombreAux), "\nIngrese el nombre\n","\nERROR!\n", 3) &&
+		if( !utn_getNombre(nombreAux, sizeof(nombreAux), "\nIngrese el nombre\n","\nERROR!\n", 3) &&
 			!utn_getStringSoloNumeros(sueldoAux, sizeof(sueldoAux),"\nIngrese el sueldo\n","ERROR!",3) &&
 			!utn_getStringSoloNumeros(horasAux, sizeof(horasAux),"\nIngrese las horas trabajadas\n","\nERROR!\n",3) )
 		{
@@ -96,9 +98,8 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
 
 /** \brief Modificar datos de empleado
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error O cancelacion de la operacion] [0 si se modifica con exito el elemento]
  *
  */
 int controller_editEmployee(LinkedList* pArrayListEmployee)
@@ -149,9 +150,8 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 
 /** \brief Baja de empleado
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error O cancelacion de la operacion] [0 si se elimina con exito el elemento]
  *
  */
 int controller_removeEmployee(LinkedList* pArrayListEmployee)
@@ -194,9 +194,8 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 
 /** \brief Listar empleados
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error] [0 si se imprime con exito por lo menos un elemento]
  *
  */
 int controller_ListEmployee(LinkedList* pArrayListEmployee)
@@ -205,7 +204,7 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
 	Employee*pE;
 	int indice=0;
 	int contador=0;
-	if(pArrayListEmployee!=NULL){
+	if(pArrayListEmployee!=NULL && ll_len(pArrayListEmployee)>0){
 		for(;indice<ll_len(pArrayListEmployee);indice++){
 			pE=ll_get(pArrayListEmployee, indice);
 			if(pE!=NULL && !employee_printEmployee(pE)){
@@ -214,15 +213,16 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
 			}
 		}
 		printf("\nSe han mostrado %d empleados\n",contador);
+	}else{
+		printf("\nNo es posible listar empleados\n");
 	}
 	return retorno;
 }
 
 /** \brief Ordenar empleados
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error O cancelacion de la operacion] [0 si se reordena con exito la linkeList]
  *
  */
 int controller_sortEmployee(LinkedList* pArrayListEmployee)
@@ -285,9 +285,9 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
 
 /** \brief Guarda los datos de los empleados en el archivo data.csv (modo texto).
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param path char*: cadena de caracteres que representa la ruta y nombre del archivo
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error] [0 si se guarda con exito por lo menos un elemento]
  *
  */
 int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
@@ -316,10 +316,10 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
 				{
 					fprintf(pFile,"%d,%s,%d,%d\n",idEmp,nomEmp,horasTrabajadasEmp,sueldoEmp);
 					contador++;
+					retorno=0;
 				}
 			}
 			printf("\nSe han guardado %d empleados en el archivo en Modo Texto",contador);
-			retorno=0;
 			fclose(pFile);
 		}
 	}
@@ -328,9 +328,9 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
 
 /** \brief Guarda los datos de los empleados en el archivo data.csv (modo binario).
  *
- * \param path char*
- * \param pArrayListEmployee LinkedList*
- * \return int
+ * \param path char*: cadena de caracteres que representa la ruta y nombre del archivo
+ * \param pArrayListEmployee LinkedList*: puntero a estructura tipo LinkedList
+ * \return int: retorna [-1 en caso de error] [0 si se guarda con exito por lo menos un elemento]
  *
  */
 int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
