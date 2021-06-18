@@ -39,7 +39,7 @@ Employee* employee_new()
  * \param horasTrabajadasStr char*: cadena de caracteres que representa las horas trabajadas
  * \param sueldoStr char*: cadena de caracteres que representa al sueldo
  *
- * \return Employee*: retorna el puntero al elemento tipo Employee seteado con los valores
+ * \return Employee*: retorna el puntero al elemento tipo Employee seteado con los valores O NULL en caso de error
  */
 Employee* employee_newParametros(char* idStr,char* nombreStr,char* horasTrabajadasStr,char* sueldoStr)
 {

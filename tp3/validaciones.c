@@ -31,9 +31,7 @@ int isValidNombre(char *nombreStr){
 		for (;nombreStr[i]!='\0';i++){
 			if ( (nombreStr[i]>'Z'||nombreStr[i]<'A') &&
 				 (nombreStr[i]>'z'||nombreStr[i]<'a') &&
-				 nombreStr[i]!=' ' &&
-				 nombreStr[i]!='-' &&
-				 nombreStr[i]!=39// ' (comilla simple)
+				 nombreStr[i]!=' '
 				)
 			{
 				retorno=0;
