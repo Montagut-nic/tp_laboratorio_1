@@ -245,12 +245,16 @@ int ll_remove(LinkedList* this,int index)
 int ll_clear(LinkedList* this)
 {
     int retorno=-1;
-    int indice=0;
-    int size;
+    int indice;
+    int flagTerminado=0;
     if(this!=NULL){
-    	size=ll_len(this);
-    	for(;indice<size;indice++){
-    		retorno=ll_remove(this, indice);
+    	do{
+    		indice=ll_len(this);
+    		indice--;
+    		flagTerminado=ll_remove(this, indice);
+    	}while(flagTerminado==0);
+    	if(ll_len(this)==0){
+    		retorno=0;
     	}
     }
     return retorno;
